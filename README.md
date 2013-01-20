@@ -24,8 +24,6 @@ Unfortunately I haven't had the chance to put in a concrete example yet, but as 
 More to come
 ============
 
-A proper Page Object (Along with PageFactory, WebElement annotations) model will soon follow once I get a sample site up and running.
-
 Also more useful methods such as HTML table data comparisons, to be used with BDD tools like Cucumber-JVM or JBehave, or just for normal assertion purposes.
 
 
@@ -35,7 +33,7 @@ ImageMagickCompareUtil
 
 ImageMagickCompareUtil is an attempt to do image based testing on a website to ensure that no changes has occurred to the layout of the website. At present the implementation is very naive and flawed, but it is a starting point.
 
-It will NOT work on web pages with dynamic content / images.
+It will NOT work on web pages with dynamic elements of varying sizes or varying width / height as image comparison relies on both sets of images being the same size.
 
 Pre-requisites
 ==============
@@ -47,7 +45,7 @@ http://www.imagemagick.org for more details
 Usage
 =====
 
-Modify ImageMagickCompareUtil.java's PATH_TO_IM_BINARY variable and point it to your ImageMagick's binary path as appropriate.
+Modify ImageMagickCompareUtil.java's PATH_TO_IM_BINARY constant and point it to your ImageMagick's binary path as appropriate.
 
 By default the screenshots are saved at a folder called screenshot in the root folder of this project.
 

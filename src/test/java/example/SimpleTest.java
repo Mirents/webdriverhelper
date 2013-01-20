@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.PageFactory;
+import pages.GooglePage;
 
 import java.util.List;
 
@@ -29,15 +31,10 @@ public class SimpleTest {
 
     @Test
     public void simpleTest() {
-        webDriverHelper.openUrl("http://www.google.com");
-        webDriverHelper.enterTextInput(webDriverHelper.findElement(By.id("gbqfq")), "testing");
-        WebElement searchButton = webDriverHelper.findElement(By.id("gbqfb"));
-        searchButton.click();
-        WebElement resultsList = webDriverHelper.findElement(By.id("rso"));
-        List<WebElement> individualResults = resultsList.findElements(By.cssSelector("li"));
-        WebElement firstResult = individualResults.get(0);
-        WebElement resultHeading = firstResult.findElement(By.cssSelector("h3"));
-        webDriverHelper.webDriverWait(10, PredicateHelper.elementContainsText(resultHeading, "testing"));
-        Assert.assertEquals(true, resultHeading.getText().contains("testing"));
+        GooglePage googlePage = PageFactory.initElements(webDriverHelper.getWebDriver(), GooglePage.class);
+        googlePage.openHomepage();
+        googlePage.searchFor("testing");
+        String resultHeading = googlePage.getResultHeadingByIndex(0);
+        Assert.assertEquals(true, resultHeading.contains("testing"));
     }
 }
