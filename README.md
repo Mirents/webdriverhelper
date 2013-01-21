@@ -21,6 +21,8 @@ Examples
 
 Unfortunately I haven't had the chance to put in a concrete example yet, but as for now you can peruse the simple JUnit test I have written (called SimpleTest)
 
+Alternatively you may also run the BDD version of the test by running CucumberTest (this is an example running with Cucumber-JVM)
+
 More to come
 ============
 
