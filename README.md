@@ -3,7 +3,7 @@ WebDriver Helper
 
 WebDriverHelper is a wrapper class around the WebDriver object to help support methods like Explicit waits in Selenium / WebDriver.
 
-It also provides wrapper methods to simplify Predicate and FluentWaits / ExpectedConditions which helps ease in testing asynchronous scenarios in dynamic web pages.
+It also provides wrapper methods to simplify Predicate and FluentWaits / ExpectedConditions which helps ease in testing asynchronous scenarios in dynamic web pages, which is arguably the trickiest problem in automated testing.
 
 Apart from that it also contains other useful methods, such as Window switching, Javascript scrolling (To fix issues with Chrome testing), and the like.
 
