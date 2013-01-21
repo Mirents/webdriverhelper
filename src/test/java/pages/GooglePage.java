@@ -28,8 +28,8 @@ public class GooglePage {
     public String getResultHeadingByIndex(int index) {
         WebElement resultsList = webDriverHelper.findElement(By.id("rso"));
         List<WebElement> individualResults = resultsList.findElements(By.cssSelector("li"));
-        WebElement firstResult = individualResults.get(index);
-        WebElement resultHeading = firstResult.findElement(By.cssSelector("h3"));
+        WebElement result = individualResults.get(index);
+        WebElement resultHeading = result.findElement(By.cssSelector("h3"));
         return resultHeading.getText();
     }
 }
