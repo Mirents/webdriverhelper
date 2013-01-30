@@ -1,11 +1,18 @@
 package reporting;
 
-/**
- * Created with IntelliJ IDEA.
- * User: antonyteoh
- * Date: 30/01/2013
- * Time: 16:40
- * To change this template use File | Settings | File Templates.
- */
 public enum ComparisonStrategy {
+
+    ONE_TO_ONE("One to one direct comparison (Both images of same size)"),
+    SUB_IMAGE("Sub image comparison (One image of larger size)"),
+    ERROR("Error in image comparison");
+
+    private String value;
+
+    ComparisonStrategy(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }
