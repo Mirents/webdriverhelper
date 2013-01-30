@@ -1,7 +1,7 @@
 package util;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.comparator.NameFileComparator;
+import reporting.CSVReportBuilder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -49,6 +49,7 @@ public class ImageMagickCompareUtil {
     private final String DIFF_SCREENS_PATH = "screenshot/diff/";
     private final String PATH_TO_IM_BINARY = "/opt/local/bin/compare";
     private final String RESULTS_FILE_PATH = "screenshot/results.csv";
+    private CSVReportBuilder csvReportBuilder = new CSVReportBuilder(RESULTS_FILE_PATH);
 
     private File[] getActualScreenshotFiles() {
         FileFilter fileFilter = new FileFilter() {
@@ -76,16 +77,9 @@ public class ImageMagickCompareUtil {
         File[] expectedFiles = getExpectedScreenshotFiles();
         Arrays.sort(expectedFiles, NameFileComparator.NAME_COMPARATOR);
         try {
-            List<String> results = new ArrayList<String>();
-            String fileHeader = "Expected Filename, " +
-                                "Actual Filename, " +
-                                "Total Image Pixels [Expected] (width * height), " +
-                                "Total Image Pixels [Actual] (width * height), " +
-                                "Diff Outcome (Pixel Difference), " +
-                                "Pixel deviation (%)";
-            results.add(fileHeader);
-            compareAndWriteResultsToFile(actualFiles, expectedFiles, results);
-            FileUtils.writeLines(new File(RESULTS_FILE_PATH), results);
+            csvReportBuilder.setColumnHeaders(getCSVReportHeaders());
+            compareAndStoreResults(actualFiles, expectedFiles);
+            csvReportBuilder.build();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -93,7 +87,18 @@ public class ImageMagickCompareUtil {
         }
     }
 
-    private void compareAndWriteResultsToFile(File[] actualFiles, File[] expectedFiles, List<String> results) throws IOException, InterruptedException {
+    private List<String> getCSVReportHeaders() {
+        List<String> csvHeaders = new ArrayList<String>();
+        csvHeaders.add("Expected Filename");
+        csvHeaders.add("Actual Filename");
+        csvHeaders.add("Total Image Pixels [Expected] (width * height)");
+        csvHeaders.add("Total Image Pixels [Actual] (width * height)");
+        csvHeaders.add("Diff Outcome (Pixel Difference)");
+        csvHeaders.add("Pixel deviation (%)");
+        return csvHeaders;
+    }
+
+    private void compareAndStoreResults(File[] actualFiles, File[] expectedFiles) throws IOException, InterruptedException {
         for(int i = 0; i < expectedFiles.length; i++) {
             String diffScreensPath = DIFF_SCREENS_PATH + "diff_" + actualFiles[i].getName().replaceFirst(ACTUAL_SCREENSHOT_FILE_PREFIX, "");
             String[] command = {PATH_TO_IM_BINARY,
@@ -107,23 +112,29 @@ public class ImageMagickCompareUtil {
             int exitValue = process.waitFor();
             System.out.println("Exit Value: " + exitValue);
             String result = errorGobbler.getOutputLine();
-            captureAndStoreResults(actualFiles[i], expectedFiles[i], results, result);
+            captureAndStoreResults(actualFiles[i], expectedFiles[i], result);
         }
     }
 
-    private void captureAndStoreResults(File actualFile, File expectedFile, List<String> results, String result) throws IOException {
+    private void captureAndStoreResults(File actualFile, File expectedFile, String result) throws IOException {
         BufferedImage expectedBufferedImage = ImageIO.read(expectedFile);
         BufferedImage actualBufferedImage = ImageIO.read(actualFile);
         BigDecimal expectedTotalPixels = BigDecimal.valueOf(expectedBufferedImage.getWidth() * expectedBufferedImage.getHeight());
         BigDecimal actualTotalPixels = BigDecimal.valueOf(actualBufferedImage.getWidth() * actualBufferedImage.getHeight());
         BigDecimal percentageDeviation = calculatePercentageDeviation(expectedTotalPixels, result);
-        String resultLine = expectedFile.getName() +
-                            "," + actualFile.getName() +
-                            "," + expectedTotalPixels +
-                            "," + actualTotalPixels +
-                            "," + result +
-                            "," + percentageDeviation;
-        results.add(resultLine);
+        storeResults(actualFile, expectedFile, result, expectedTotalPixels, actualTotalPixels, percentageDeviation);
+    }
+
+    private void storeResults(File actualFile, File expectedFile, String result,
+                              BigDecimal expectedTotalPixels, BigDecimal actualTotalPixels, BigDecimal percentageDeviation) {
+        List<String> results = new ArrayList<String>();
+        results.add(expectedFile.getName());
+        results.add(actualFile.getName());
+        results.add(expectedTotalPixels.toString());
+        results.add(actualTotalPixels.toString());
+        results.add(result);
+        results.add(percentageDeviation.toString());
+        csvReportBuilder.addColumnValues(results);
     }
 
     private BigDecimal calculatePercentageDeviation(BigDecimal totalImagePixels, String result) throws IOException {
