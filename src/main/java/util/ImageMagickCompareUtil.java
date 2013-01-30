@@ -94,39 +94,39 @@ public class ImageMagickCompareUtil {
     }
 
     private String[] buildCommandArray(File actualFile, File expectedFile, String diffScreensPath, ResultRow resultRow) throws IOException {
+        calculateAndStoreImagePixelValues(actualFile, expectedFile, resultRow);
         List<String> commands = new ArrayList<String>();
         commands.add(PATH_TO_IM_BINARY);
         commands.add(METRIC_PARAMETER);
         commands.add(METRIC_OPTION);
-        calculateAndStoreImagePixelValues(actualFile, expectedFile, commands, resultRow);
+        buildCommandAccordingToImageSizeDifference(resultRow, commands);
         commands.add(diffScreensPath);
         return commands.toArray(new String[commands.size()]);
     }
 
-    private void calculateAndStoreImagePixelValues(File actualFile, File expectedFile, List<String> commands, ResultRow resultRow) throws IOException {
+    private void calculateAndStoreImagePixelValues(File actualFile, File expectedFile, ResultRow resultRow) throws IOException {
         BufferedImage expectedBufferedImage = ImageIO.read(expectedFile);
         BufferedImage actualBufferedImage = ImageIO.read(actualFile);
         BigDecimal expectedTotalPixels = BigDecimal.valueOf(expectedBufferedImage.getWidth() * expectedBufferedImage.getHeight());
         BigDecimal actualTotalPixels = BigDecimal.valueOf(actualBufferedImage.getWidth() * actualBufferedImage.getHeight());
-        checkImageSizeDifference(actualFile, expectedFile, commands, expectedTotalPixels, actualTotalPixels);
         resultRow.setExpectedTotalPixels(expectedTotalPixels);
         resultRow.setActualTotalPixels(actualTotalPixels);
         resultRow.setExpectedFileName(expectedFile.getName());
         resultRow.setActualFileName(actualFile.getName());
     }
 
-    private void checkImageSizeDifference(File actualFile, File expectedFile, List<String> commands, BigDecimal expectedTotalPixels, BigDecimal actualTotalPixels) {
-        if(!expectedTotalPixels.equals(actualTotalPixels)) {
+    private void buildCommandAccordingToImageSizeDifference(ResultRow resultRow, List<String> commands) {
+        if(!resultRow.getExpectedTotalPixels().equals(resultRow.getActualTotalPixels())) {
             commands.add(SUBIMAGE_SEARCH_OPTION);
             commands.add(DISSIMILAR_THRESHOLD);
             commands.add(DISSIMILAR_THRESHOLD_VALUE);
         }
-        if(expectedTotalPixels.doubleValue() > actualTotalPixels.doubleValue()) {
-            commands.add(EXPECTED_SCREENS_PATH + expectedFile.getName());
-            commands.add(ACTUAL_SCREENS_PATH + actualFile.getName());
+        if(resultRow.getExpectedTotalPixels().doubleValue() > resultRow.getActualTotalPixels().doubleValue()) {
+            commands.add(EXPECTED_SCREENS_PATH + resultRow.getExpectedFileName());
+            commands.add(ACTUAL_SCREENS_PATH + resultRow.getActualFileName());
         } else {
-            commands.add(ACTUAL_SCREENS_PATH + actualFile.getName());
-            commands.add(EXPECTED_SCREENS_PATH + expectedFile.getName());
+            commands.add(ACTUAL_SCREENS_PATH + resultRow.getActualFileName());
+            commands.add(EXPECTED_SCREENS_PATH + resultRow.getExpectedFileName());
         }
     }
 
