@@ -15,4 +15,14 @@ public enum ComparisonStrategy {
     public String getValue() {
         return value;
     }
+
+    public static ComparisonStrategy getStrategy(String output) {
+        if(output.startsWith("compare")) {
+            return ERROR;
+        } else if(output.contains("@")) {
+            return SUB_IMAGE;
+        } else {
+            return ONE_TO_ONE;
+        }
+    }
 }

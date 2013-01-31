@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CSVReportBuilder {
     private String pathToCsvFile;
@@ -14,11 +15,6 @@ public class CSVReportBuilder {
 
     public CSVReportBuilder(String pathToCsvFile) {
         this.pathToCsvFile = pathToCsvFile;
-    }
-
-    public CSVReportBuilder(String pathToCsvFile, List<String> columnHeaders) {
-        this.pathToCsvFile = pathToCsvFile;
-        this.columnHeaders = columnHeaders;
     }
 
     public void build() {
@@ -36,15 +32,14 @@ public class CSVReportBuilder {
         }
     }
 
-    public void addColumnValues(List<String> columnValues) {
-        this.entries.add(columnValues);
-    }
-
-    public List<String> getColumnHeaders() {
-        return columnHeaders;
-    }
-
-    public void setColumnHeaders(List<String> columnHeaders) {
-        this.columnHeaders = columnHeaders;
+    public void addColumnValues(Map<String, String> columnValues) {
+        if(columnHeaders.size() == 0) {
+            for(String headerValue : columnValues.keySet()) {
+                columnHeaders.add(headerValue);
+            }
+        }
+        List<String> columnValuesList = new ArrayList<String>();
+        columnValuesList.addAll(columnValues.values());
+        this.entries.add(columnValuesList);
     }
 }

@@ -1,8 +1,7 @@
 package reporting;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ResultRow {
     private String expectedFileName;
@@ -19,18 +18,18 @@ public class ResultRow {
         return expectedTotalPixels;
     }
 
-    public List<String> getResultsAsList() {
-        List<String> resultList = new ArrayList<String>();
-        resultList.add(expectedFileName);
-        resultList.add(actualFileName);
-        resultList.add(expectedTotalPixels.toString());
-        resultList.add(actualTotalPixels.toString());
-        resultList.add(output);
-        resultList.add(percentageDeviation.toString());
-        resultList.add(strategyUsed.getValue());
-        resultList.add(notes);
-        resultList.add(commandExecuted);
-        return resultList;
+    public Map<String, String> getResultsAsMap() {
+        Map<String, String> resultsMap = new LinkedHashMap<String, String>();
+        resultsMap.put("Expected Filename", expectedFileName);
+        resultsMap.put("Actual Filename", actualFileName);
+        resultsMap.put("Total Image Pixels [Expected] (width * height)", expectedTotalPixels.toString());
+        resultsMap.put("Total Image Pixels [Actual] (width * height)", actualTotalPixels.toString());
+        resultsMap.put("Diff Outcome (Pixel Difference)", output);
+        resultsMap.put("Pixel Deviation (%)", percentageDeviation.toString());
+        resultsMap.put("Comparison Strategy Used", strategyUsed.getValue());
+        resultsMap.put("Notes", notes);
+        resultsMap.put("Command Executed", commandExecuted);
+        return resultsMap;
     }
 
     public void setExpectedTotalPixels(BigDecimal expectedTotalPixels) {
