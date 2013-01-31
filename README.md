@@ -76,6 +76,10 @@ You can run ScreenshotTest which opens Facebook's main page and help page which 
 
 Create a screenshot/expected folder and copy the files over as your first expected screenshots. Run ScreenshotTest again, which will overwrite your previous screenshot.
 
+Now create a screenshot/diff folder (Leave it empty).
+
+By default the actual and expected screenshots are filtered with the actual_ and expected_ prefix respectively. This can be removed by setting the ACTUAL_SCREENSHOT_FILE_PREFIX and EXPECTED_SCREENSHOT_FILE_PREFIX constants to be empty strings.
+
 You can then run ImageMagickCompareUtil's compareAndCaptureResults() by invoking
 
 ```
