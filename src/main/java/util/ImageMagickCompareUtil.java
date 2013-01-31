@@ -58,7 +58,10 @@ public class ImageMagickCompareUtil {
         Arrays.sort(expectedFiles, NameFileComparator.NAME_COMPARATOR);
         try {
             csvReportBuilder.setColumnHeaders(getCSVReportHeaders());
-            compareAndStoreResults(actualFiles, expectedFiles);
+            for(int i = 0; i < expectedFiles.length; i++) {
+            	ResultRow resultRow = compareAndStoreResults(expectedFiles[i], actualFiles[i]);
+                csvReportBuilder.addColumnValues(resultRow.getResultsAsList());
+            }
             csvReportBuilder.build();
         } catch (IOException e) {
             e.printStackTrace();
@@ -81,17 +84,17 @@ public class ImageMagickCompareUtil {
         return csvHeaders;
     }
 
-    private void compareAndStoreResults(File[] actualFiles, File[] expectedFiles) throws IOException, InterruptedException {
-        for(int i = 0; i < expectedFiles.length; i++) {
-            String diffScreensPath = DIFF_SCREENS_PATH + "diff_" + actualFiles[i].getName().replaceFirst(ACTUAL_SCREENSHOT_FILE_PREFIX, "");
-            ResultRow resultRow = new ResultRow();
-            String[] command = buildCommandArray(actualFiles[i], expectedFiles[i], diffScreensPath, resultRow);
-            Process process = Runtime.getRuntime().exec(command);
-            StreamGobbler errorGobbler = gobbleStream(process);
-            System.out.println("Exit Value: " + process.waitFor());
-            captureAndStoreResults(resultRow, errorGobbler.getOutputLine(), command);
-        }
-    }
+	private ResultRow compareAndStoreResults(File expectedFile, File actualFile) throws IOException,
+			InterruptedException {
+		ResultRow resultRow = new ResultRow();
+		String diffScreensPath = DIFF_SCREENS_PATH + "diff_" + actualFile.getName().replaceFirst(ACTUAL_SCREENSHOT_FILE_PREFIX, "");
+		String[] command = buildCommandArray(actualFile, expectedFile, diffScreensPath, resultRow);
+		Process process = Runtime.getRuntime().exec(command);
+		StreamGobbler errorGobbler = gobbleStream(process);
+		System.out.println("Exit Value: " + process.waitFor());
+		captureAndStoreResults(resultRow, errorGobbler.getOutputLine(), command);
+		return resultRow;
+	}
 
     private String[] buildCommandArray(File actualFile, File expectedFile, String diffScreensPath, ResultRow resultRow) throws IOException {
         calculateAndStoreImagePixelValues(actualFile, expectedFile, resultRow);
@@ -139,7 +142,6 @@ public class ImageMagickCompareUtil {
         resultRow.setPercentageDeviation(percentageDeviation);
         resultRow.setOutput(output);
         resultRow.setCommandExecuted(StringUtils.join(command, " "));
-        csvReportBuilder.addColumnValues(resultRow.getResultsAsList());
     }
 
     private void setComparisonStrategyUsed(ResultRow resultRow, String output) {
