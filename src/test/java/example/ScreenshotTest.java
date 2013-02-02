@@ -24,8 +24,8 @@ public class ScreenshotTest {
     @Test
     public void simpleTest() {
         webDriverHelper.openUrl("http://www.facebook.com");
-        webDriverHelper.takeScreenshot("screenshot/actual/actual_fbMain.png");
+        webDriverHelper.takeScreenshot("screenshot/actual/fbMain.png");
         webDriverHelper.openUrl("http://www.facebook.com/help/?ref=pf");
-        webDriverHelper.takeScreenshot("screenshot/actual/actual_fbHelp.png");
+        webDriverHelper.takeScreenshot("screenshot/actual/fbHelp.png");
     }
 }

@@ -1,20 +1,18 @@
 package util;
 
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Arrays;
+
 import org.apache.commons.io.comparator.NameFileComparator;
+
 import reporting.CSVReportBuilder;
 import reporting.ComparisonStrategy;
 import reporting.ResultRow;
 
-import java.io.*;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class ImageMagickCompareUtil {
-    private final String ACTUAL_SCREENSHOT_FILE_PREFIX = "actual_";
-    private final String EXPECTED_SCREENSHOT_FILE_PREFIX = "expected_";
     private final String ACTUAL_SCREENS_PATH = "screenshot/actual/";
     private final String EXPECTED_SCREENS_PATH = "screenshot/expected/";
     private final String DIFF_SCREENS_PATH = "screenshot/diff/";
@@ -23,23 +21,11 @@ public class ImageMagickCompareUtil {
     private CSVReportBuilder csvReportBuilder = new CSVReportBuilder(RESULTS_FILE_PATH);
 
     private File[] getActualScreenshotFiles() {
-        FileFilter fileFilter = new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getName().startsWith(ACTUAL_SCREENSHOT_FILE_PREFIX);
-            }
-        };
-        return new File(ACTUAL_SCREENS_PATH).listFiles(fileFilter);
+        return new File(ACTUAL_SCREENS_PATH).listFiles();
     }
 
     private File[] getExpectedScreenshotFiles() {
-        FileFilter fileFilter = new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getName().startsWith(EXPECTED_SCREENSHOT_FILE_PREFIX);
-            }
-        };
-        return new File(EXPECTED_SCREENS_PATH).listFiles(fileFilter);
+        return new File(EXPECTED_SCREENS_PATH).listFiles();
     }
 
     public void compareAndCaptureResults() {
@@ -101,7 +87,12 @@ public class ImageMagickCompareUtil {
 
     private void captureAndStoreResults(ResultRow resultRow, String output) throws IOException {
         output = getFinalOutput(resultRow.getStrategyUsed(), output);
-        BigDecimal percentageDeviation = calculatePercentageDeviation(resultRow.getExpectedTotalPixels(), output);
+        BigDecimal percentageDeviation;
+        if(resultRow.getExpectedTotalPixels().longValue() > resultRow.getActualTotalPixels().longValue()) {
+        	percentageDeviation = calculatePercentageDeviation(resultRow.getExpectedTotalPixels(), output);
+        } else {
+        	percentageDeviation = calculatePercentageDeviation(resultRow.getActualTotalPixels(), output); 
+        }
         resultRow.setPercentageDeviation(percentageDeviation);
         resultRow.setOutput(output);
     }

@@ -21,7 +21,7 @@ public final class WebDriverHelper {
     private static final WebDriverHelper HELPER_INSTANCE = new WebDriverHelper();
     private static WebDriver WEB_DRIVER;
     private int timeoutInSeconds = 30;
-    private String currentWindowHandle;
+    private String previousWindowHandle;
 
     private WebDriverHelper() {
         /** To prevent instantiation **/
@@ -172,8 +172,12 @@ public final class WebDriverHelper {
         return new Actions(WEB_DRIVER);
     }
 
+    public void getPreviousWindow() {
+    	WEB_DRIVER.switchTo().window(previousWindowHandle);
+    }
+    
     public void switchToNewWindow() {
-        currentWindowHandle = WEB_DRIVER.getWindowHandle();
+        String currentWindowHandle = WEB_DRIVER.getWindowHandle();
         Set<String> windowHandles = WEB_DRIVER.getWindowHandles();
         for(String windowHandle : windowHandles) {
             if(!windowHandle.equals(currentWindowHandle)) {
@@ -181,6 +185,7 @@ public final class WebDriverHelper {
                 break;
             }
         }
+        previousWindowHandle = currentWindowHandle;
     }
 
     public void takeScreenshot(String filename) {
