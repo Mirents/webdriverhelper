@@ -31,4 +31,8 @@ public class StreamGobbler extends Thread {
     public String getOutputLine() {
         return outputLine;
     }
+    
+    public String getType() {
+    	return type;
+    }
 }
