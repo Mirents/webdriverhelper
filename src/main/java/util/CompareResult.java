@@ -1,11 +1,22 @@
 package util;
 
-/**
- * Created with IntelliJ IDEA.
- * User: antonyteoh
- * Date: 20/02/2013
- * Time: 15:13
- * To change this template use File | Settings | File Templates.
- */
 public class CompareResult {
+    private boolean outcome;
+    private String reason;
+
+    public boolean isOutcome() {
+        return outcome;
+    }
+
+    public void setOutcome(boolean outcome) {
+        this.outcome = outcome;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 }

@@ -4,10 +4,7 @@ import helper.WebDriverHelper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Table {
     // DTD states for table (w3.org)
@@ -70,6 +67,14 @@ public class Table {
         return this.tableBodies.get(index).findElements(By.cssSelector("tr"));
     }
 
+    public List<WebElement> getAllTableBodyRows() {
+        List<WebElement> tableBodyRows = new ArrayList<WebElement>();
+        for(WebElement tableBody : tableBodies) {
+            tableBodyRows.addAll(tableBody.findElements(By.cssSelector("tr")));
+        }
+        return tableBodyRows;
+    }
+
     public List<List<WebElement>> getTableBodyColumns(int index) {
         List<List<WebElement>> tableColumns = new ArrayList<List<WebElement>>();
         List<WebElement> tableRows = getTableBodyRows(index);
@@ -118,7 +123,16 @@ public class Table {
         return colGroups;
     }
 
-    public List<Map<String, String>> getTableTextValues() {
+    public List<Map<String, WebElement>> getTableBodyColumnWebElementValues() {
+        List<List<WebElement>> allColumns = getAllTableBodyColumns();
+        List<WebElement> tableHeaders = null;
+        if(tableHeader != null) {
+            tableHeaders = getTableHeaderColumns();
+        }
+        return getColumnWebElementValues(allColumns, tableHeaders);
+    }
+
+    public List<Map<String, String>> getTableBodyColumnTextValues() {
         List<List<WebElement>> allColumns = getAllTableBodyColumns();
         List<WebElement> tableHeaders = null;
         if(tableHeader != null) {
@@ -127,22 +141,42 @@ public class Table {
         return getColumnTextValues(allColumns, tableHeaders);
     }
 
+    private List<Map<String, WebElement>> getColumnWebElementValues(List<List<WebElement>> allColumns, List<WebElement> tableHeaders) {
+        List<Map<String, WebElement>> webElementValues = new ArrayList<Map<String, WebElement>>();
+        for(List<WebElement> columns : allColumns) {
+            Map<String, WebElement> columnElement = new LinkedHashMap<String, WebElement>();
+            putColumnElement(tableHeaders, columns, columnElement);
+            webElementValues.add(columnElement);
+        }
+        return webElementValues;
+    }
+
     private List<Map<String, String>> getColumnTextValues(List<List<WebElement>> allColumns, List<WebElement> tableHeaders) {
         List<Map<String, String>> tableTextValues = new ArrayList<Map<String, String>>();
         for(List<WebElement> columns : allColumns) {
             Map<String, String> columnData = new HashMap<String, String>();
-            getColumnData(tableHeaders, columns, columnData);
+            putColumnData(tableHeaders, columns, columnData);
             tableTextValues.add(columnData);
         }
         return tableTextValues;
     }
 
-    private void getColumnData(List<WebElement> tableHeaders, List<WebElement> columns, Map<String, String> columnData) {
+    private void putColumnData(List<WebElement> tableHeaders, List<WebElement> columns, Map<String, String> columnData) {
         for(int i = 0; i < columns.size(); i++) {
             if(tableHeaders != null) {
                 columnData.put(tableHeaders.get(i).getText(), columns.get(i).getText());
             } else {
                 columnData.put("Header " + (i+1), columns.get(i).getText());
+            }
+        }
+    }
+
+    private void putColumnElement(List<WebElement> tableHeaders, List<WebElement> columns, Map<String, WebElement> columnData) {
+        for(int i = 0; i < columns.size(); i++) {
+            if(tableHeaders != null) {
+                columnData.put(tableHeaders.get(i).getText(), columns.get(i));
+            } else {
+                columnData.put("Header " + (i+1), columns.get(i));
             }
         }
     }

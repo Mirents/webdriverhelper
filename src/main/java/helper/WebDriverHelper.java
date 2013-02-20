@@ -154,7 +154,7 @@ public final class WebDriverHelper {
     }
 
     public void enterTextInput(WebElement inputTextBox, String value) {
-        webDriverWait(timeoutInSeconds, PredicateHelper.elementIsDisplayed(inputTextBox));
+        webDriverWait(timeoutInSeconds, ExpectedConditions.visibilityOf(inputTextBox));
         inputTextBox.sendKeys(value);
     }
 
