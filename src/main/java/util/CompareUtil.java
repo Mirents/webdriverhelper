@@ -29,7 +29,7 @@ public class CompareUtil {
                 if(!expectedRow.get(header).equals(actualRow.get(header))) {
                     result.setOutcome(false);
                     result.setReason("Expected column value: " + expectedRow.get(header) + " at row: " + (i+1) +
-                                     "does not match Actual column value: " + actualRow.get(header));
+                                     " does not match Actual column value: " + actualRow.get(header));
                     return result;
                 }
             }
