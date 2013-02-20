@@ -1,12 +1,13 @@
 package webelement;
 
 import helper.WebDriverHelper;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 import java.util.*;
 
-public class Table {
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+public class HtmlTable {
     // DTD states for table (w3.org)
     // <!ELEMENT table (caption?, (col*|colgroup*), thead?, tfoot?, (tbody+|tr+))>
 
@@ -20,31 +21,31 @@ public class Table {
     private List<WebElement> allTableRows;
     private WebDriverHelper driverHelper = WebDriverHelper.getInstance();
 
-    public Table(WebElement webElement) {
+    public HtmlTable(WebElement webElement) {
         this.table = webElement;
         initialiseTableValues();
     }
 
-    public Table(By by) {
+    public HtmlTable(By by) {
         this.table = driverHelper.findElement(by);
         initialiseTableValues();
     }
 
     private void initialiseTableValues() {
-        if(driverHelper.doesWebElementExist(By.cssSelector("thead"))) {
-            this.tableHeader = driverHelper.findElement(By.cssSelector("thead"));
+        if(driverHelper.doesWebElementExist(this.table, By.cssSelector("thead"))) {
+            this.tableHeader = this.table.findElement(By.cssSelector("thead"));
         }
-        if(driverHelper.doesWebElementExist(By.cssSelector("tfoot"))) {
-            this.tableFooter = driverHelper.findElement(By.cssSelector("tfoot"));
+        if(driverHelper.doesWebElementExist(this.table, By.cssSelector("tfoot"))) {
+            this.tableFooter = this.table.findElement(By.cssSelector("tfoot"));
         }
-        if(driverHelper.doesWebElementExist(By.cssSelector("caption"))) {
-            this.caption = driverHelper.findElement(By.cssSelector("caption"));
+        if(driverHelper.doesWebElementExist(this.table, By.cssSelector("caption"))) {
+            this.caption = this.table.findElement(By.cssSelector("caption"));
         }
-        if(driverHelper.doesWebElementExist(By.cssSelector("colgroup"))) {
-            this.colGroups = driverHelper.findElements(By.cssSelector("colgroup"));
+        if(driverHelper.doesWebElementExist(this.table, By.cssSelector("colgroup"))) {
+            this.colGroups = this.table.findElements(By.cssSelector("colgroup"));
         }
-        this.tableBodies = driverHelper.findElements(By.cssSelector("tbody"));
-        this.allTableRows = driverHelper.findElements(By.cssSelector("tr"));
+        this.tableBodies = this.table.findElements(By.cssSelector("tbody"));
+        this.allTableRows = this.table.findElements(By.cssSelector("tr"));
     }
 
     public WebElement getTableHeader() {

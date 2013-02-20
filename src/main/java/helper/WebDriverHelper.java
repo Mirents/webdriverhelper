@@ -1,27 +1,38 @@
 package helper;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.Augmenter;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+
 public final class WebDriverHelper {
 
     private static final WebDriverHelper HELPER_INSTANCE = new WebDriverHelper();
     private static WebDriver WEB_DRIVER;
     private int timeoutInSeconds = 30;
-    private String currentWindowHandle;
+    private String previousWindowHandle;
 
     private WebDriverHelper() {
         /** To prevent instantiation **/
@@ -172,8 +183,12 @@ public final class WebDriverHelper {
         return new Actions(WEB_DRIVER);
     }
 
+    public void getPreviousWindow() {
+    	WEB_DRIVER.switchTo().window(previousWindowHandle);
+    }
+    
     public void switchToNewWindow() {
-        currentWindowHandle = WEB_DRIVER.getWindowHandle();
+        String currentWindowHandle = WEB_DRIVER.getWindowHandle();
         Set<String> windowHandles = WEB_DRIVER.getWindowHandles();
         for(String windowHandle : windowHandles) {
             if(!windowHandle.equals(currentWindowHandle)) {
@@ -181,6 +196,7 @@ public final class WebDriverHelper {
                 break;
             }
         }
+        previousWindowHandle = currentWindowHandle;
     }
 
     public void takeScreenshot(String filename) {
