@@ -30,9 +30,7 @@ public class CompareUtilTest {
         expectedList.add(expectedMap);
         actualList.add(actualFirstMap);
         actualList.add(actualSecondMap);
-
-        CompareResult compareResult = new CompareResult();
-        compareResult = CompareUtil.compareListOfMaps(expectedList, actualList);
+        CompareResult compareResult = CompareUtil.compareListOfMaps(expectedList, actualList);
         assertThat(compareResult.getReason(), equalTo("Size of lists do not match, Expected: 1 , but Actual: 2"));
         assertFalse(compareResult.isOutcome());
     }
@@ -49,8 +47,7 @@ public class CompareUtilTest {
         expectedMap.put("Header B", "Value 2");
         expectedList.add(expectedMap);
         actualList.add(actualMap);
-        CompareResult compareResult = new CompareResult();
-        compareResult = CompareUtil.compareListOfMaps(expectedList, actualList);
+        CompareResult compareResult = CompareUtil.compareListOfMaps(expectedList, actualList);
         assertThat(compareResult.getReason(), equalTo("No expected header match found for actual header: Header 2"));
         assertFalse(compareResult.isOutcome());
     }
@@ -67,8 +64,7 @@ public class CompareUtilTest {
         expectedMap.put("Header 2", "Value A");
         expectedList.add(expectedMap);
         actualList.add(actualMap);
-        CompareResult compareResult = new CompareResult();
-        compareResult = CompareUtil.compareListOfMaps(expectedList, actualList);
+        CompareResult compareResult = CompareUtil.compareListOfMaps(expectedList, actualList);
         assertThat(compareResult.getReason(), equalTo("Expected column value: Value A at row: 1 " +
                                                      "does not match Actual column value: Value 2"));
         assertFalse(compareResult.isOutcome());
@@ -86,8 +82,7 @@ public class CompareUtilTest {
         expectedMap.put("Header 2", "Value 2");
         expectedList.add(expectedMap);
         actualList.add(actualMap);
-        CompareResult compareResult = new CompareResult();
-        compareResult = CompareUtil.compareListOfMaps(expectedList, actualList);
+        CompareResult compareResult = CompareUtil.compareListOfMaps(expectedList, actualList);
         assertThat(compareResult.getReason(), equalTo(null));
         assertTrue(compareResult.isOutcome());
     }

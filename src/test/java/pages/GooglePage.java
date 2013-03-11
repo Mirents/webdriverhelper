@@ -21,7 +21,7 @@ public class GooglePage {
     }
 
     public void searchFor(String searchItem) {
-        webDriverHelper.enterTextInput(searchInputTextBox, "testing");
+        webDriverHelper.enterTextInput(searchInputTextBox, searchItem);
         searchButton.click();
     }
 
