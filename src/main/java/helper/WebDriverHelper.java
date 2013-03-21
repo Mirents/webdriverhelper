@@ -83,7 +83,7 @@ public final class WebDriverHelper {
         new WebDriverWait(WEB_DRIVER, timeoutInSeconds).until(predicate);
     }
 
-    public void webDriverWait(int timeoutInSeconds, ExpectedCondition<WebElement> expectedCondition) {
+    public void webDriverWait(int timeoutInSeconds, ExpectedCondition expectedCondition) {
         new WebDriverWait(WEB_DRIVER, timeoutInSeconds).until(expectedCondition);
     }
 
@@ -200,6 +200,7 @@ public final class WebDriverHelper {
     }
 
     public Alert getAlert() {
+        webDriverWait(timeoutInSeconds, ExpectedConditions.alertIsPresent());
         return WEB_DRIVER.switchTo().alert();
     }
 }
