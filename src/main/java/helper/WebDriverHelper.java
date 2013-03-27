@@ -150,7 +150,12 @@ public final class WebDriverHelper {
     public Select getSelectElement(WebElement element) {
         return waitForSelectElement(element);
     }
-
+    
+    public void clearTextInput(WebElement inputTextBox) {
+        webDriverWait(timeoutInSeconds, ExpectedConditions.visibilityOf(inputTextBox));
+        inputTextBox.clear();
+    }
+    
     public void enterTextInput(WebElement inputTextBox, String value) {
         webDriverWait(timeoutInSeconds, ExpectedConditions.visibilityOf(inputTextBox));
         inputTextBox.sendKeys(value);
