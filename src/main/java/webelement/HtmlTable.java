@@ -105,7 +105,7 @@ public class HtmlTable {
     }
 
     public List<WebElement> getTableFooterColumns() {
-        return this.tableHeader.findElements(By.cssSelector("td"));
+        return this.tableFooter.findElements(By.cssSelector("td"));
     }
 
     public WebElement getCaption() {
